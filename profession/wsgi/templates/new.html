@@ -28,9 +28,12 @@
  
     <div class="control-group">
         <div class="controls">
-          <input type="text" id="profession" name="profession" class="input-xlarge"
-            placeholder="Please enter your profession" value="{{ request.form.title }}"
-            required>
+          <select name=profession>
+            <option value='Developer'>Developer</option>
+            <option value='DevOps'>DevOps</option>
+            <option value='Sales'>Sales</option>
+            <option value='Human Resources'>Human Resources</option>
+          </select>
         </div>
     </div>
  
