@@ -1,0 +1,1 @@
+*/5 * * * * root bash /root/narvar/check_system.sh >> /var/log/check_system.log
