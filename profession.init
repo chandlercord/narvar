@@ -27,28 +27,38 @@ fi
 
 PIDFILE="/var/run/profession.pid"
 PROFESSION_DIR="/root/narvar/profession/"
+APPLICATION_NAME="Profession"
 
 start() {
-  echo -n "Starting profession Daemon: "
+  echo -n "Starting ${APPLICATION_NAME} Daemon: "
   if [ -f $PIDFILE ]; then
     PID=`cat $PIDFILE`
-    echo profession already running: $PID
+    echo ${APPLICATION_NAME} already running: $PID
     exit 1;
   else
     cd $PROFESSION_DIR
-    PID=`python wsgi/profession.py >/dev/null 2>&1 & echo $! > $PIDFILE`
+    PID=`python wsgi/profession.py >profession.log 2>&1 & echo $! > $PIDFILE`
     echo `cat $PIDFILE`
   fi
 }
 
 stop() {
-  echo -n "Shutting down PROFESSION_DIR Daemon: "
-  echo
-  kill `ps -ef | grep profession.py | grep -v grep | awk '{ print $2 }'`
-  echo
-  rm -f /var/lock/subsys/profession
-  rm -f ${PIDFILE}
-  return 0
+  echo "Stopping ${APPLICATION_NAME}:"
+  if [ `ps -ef | grep profession.py | grep -v grep > /dev/null 2>&1; echo $?` -eq 0 ]; then
+    echo -n "  Shutting down ${APPLICATION_NAME} Daemon: `cat $PIDFILE`"
+    echo
+    kill `ps -ef | grep profession.py | grep -v grep | awk '{ print $2 }'`
+    echo
+    rm -f /var/lock/subsys/profession
+    rm -f ${PIDFILE}
+    return 0
+  else
+    echo -n "  ${APPLICATION_NAME} not running, removing lock and PID file."
+    echo
+    rm -f /var/lock/subsys/profession
+    rm -f ${PIDFILE}
+    return 0
+  fi
 }
 
 case "$1" in
